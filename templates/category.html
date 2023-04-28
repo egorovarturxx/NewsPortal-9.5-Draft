@@ -1,0 +1,12 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Категория
+{% endblock title %}
+
+{% block content %}
+
+{{ category }}
+<p><a href="{{ category.id }}/subscribe">Подписаться</a></p>
+
+{% endblock content %}

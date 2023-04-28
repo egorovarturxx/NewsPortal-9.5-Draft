@@ -1,0 +1,73 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+    <h1>Всего новостей и статей: {{ news_quantity }}</h1>
+            <form method="GET">
+            <div style="float:left; width:75%; height:45px; line-height:20px">
+
+                <label for="date">Начиная с даты:</label>
+                <input type="date" id="date" name="date__gt">
+
+                <label for="title">По названию:</label>
+                <input type="text" id="title" name="title__icontains">
+
+                <label for="author">По автору:</label>
+                <select name="author" id="author">
+                    <option value="0">---------</option>
+                    <option value="1">admin</option>
+                    <option value="2">JoeRogan</option>
+                    <option value="3">AndrewTate</option>
+                </select>
+            </div>
+            <div style="float:left; width:25%; height:45px; line-height:35px">
+                <button type="submit" class="btn btn-secondary">search</button>
+            </div>
+            </form>
+    <hr>
+    {% if news %}
+        <table>
+            <table border="1">
+            <tr>
+                <td><strong>Заголовок</strong></td>
+                <td><strong>Дата публикации</strong></td>
+                <td><strong>Текст</strong></td>
+                <td><strong>Автор и рейтинг</strong></td>
+            </tr>
+            {% for post in filter.qs %}
+            <tr>
+                <td>{{ post.title|censor }}</td>
+                <td>{{ post.date|date:'d.m.Y h:m'  }}</td>
+                <td>{{ post.text|censor|truncatechars:20 }}</td>
+                <td>{{ post.author }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    {% else %}
+        <h2>Новостей нет!</h2>
+    {% endif %}
+            {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}
